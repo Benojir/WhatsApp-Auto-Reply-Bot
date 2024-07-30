@@ -27,11 +27,13 @@ public class MyNotificationListenerService extends NotificationListenerService {
     private static final String TAG = "MADARA";
     private final String notificationChannelId = "wa_auto_reply_channel";
     private final Set<String> respondedMessages = new HashSet<>();
-    private final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    private SharedPreferences sharedPreferences;
 
     @Override
     public void onNotificationPosted(StatusBarNotification statusBarNotification) {
         super.onNotificationPosted(statusBarNotification);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (statusBarNotification.getPackageName().equalsIgnoreCase("com.whatsapp")) {
 

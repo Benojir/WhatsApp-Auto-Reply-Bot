@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
@@ -55,19 +56,20 @@ public class MyNotificationListenerService extends NotificationListenerService {
             // Process the message and send auto-reply
             if (text != null && !text.toString().isEmpty()) {
 
+                String senderMessage = text.toString();
+
                 if (sharedPreferences.getBoolean("is_bot_enabled", true)) {
 
                     boolean groupReplyEnabled = sharedPreferences.getBoolean("is_group_reply_enabled", false);
 
                     if (groupReplyEnabled){
-                        sendAutoReply(statusBarNotification, title, text.toString());
+                        processAutoReply(statusBarNotification, title, senderMessage, messageId);
                     } else {
                         if (!isGroupMessage(title)){
-                            sendAutoReply(statusBarNotification, title, text.toString());
+                            processAutoReply(statusBarNotification, title, senderMessage, messageId);
+                            Log.d(TAG, "onNotificationPosted: ZZZ");
                         }
                     }
-
-                    new Handler().postDelayed(() -> respondedMessages.remove(messageId), 750);
                 }
             }
 
@@ -80,7 +82,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
 //    ----------------------------------------------------------------------------------------------
 
-    private void sendAutoReply(StatusBarNotification statusBarNotification, String sender, String message) {
+    private void processAutoReply(StatusBarNotification statusBarNotification, String sender, String message, String messageId) {
 
         Notification.Action[] actions = statusBarNotification.getNotification().actions;
 
@@ -91,41 +93,52 @@ public class MyNotificationListenerService extends NotificationListenerService {
                 // Here is validating sender's message. Not whatsapp checking for messages
                 if (action.getRemoteInputs() != null && action.getRemoteInputs().length > 0) {
 
-                    RemoteInput remoteInput = action.getRemoteInputs()[0];
-
-                    Intent intent = new Intent();
-
                     //..............................................................................
 
-                    String replyPrefix = sharedPreferences.getString("reply_prefix_message", getString(R.string.default_reply_prefix));
-                    botReplyMessage = replyPrefix + " " + sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message));
+                    String replyPrefix = sharedPreferences.getString("reply_prefix_message", getString(R.string.default_reply_prefix)).trim();
 
                     if (isAIConfigured()) {
                         GenerateReplyUsingChatGPT generateReplyUsingChatGPT = new GenerateReplyUsingChatGPT(this, sharedPreferences, messageHandler);
-                        generateReplyUsingChatGPT.generateReply(sender, message, reply -> botReplyMessage = reply);
-                        botReplyMessage = replyPrefix + " " + botReplyMessage;
-                    }
 
-                    messageHandler.handleIncomingMessage(sender, message, botReplyMessage.trim());
+                        generateReplyUsingChatGPT.generateReply(sender, message, reply -> {
+                            botReplyMessage = replyPrefix + " " + reply;
+                            messageHandler.handleIncomingMessage(sender, message, botReplyMessage);
+                            send(action, botReplyMessage);
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> respondedMessages.remove(messageId), 750);
+                            Log.d(TAG, "processAutoReply: A.I Reply");
+                        });
+                    } else {
+                        botReplyMessage = (replyPrefix + " " + sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message))).trim();
+                        messageHandler.handleIncomingMessage(sender, message, botReplyMessage);
+                        send(action, botReplyMessage);
+                        new Handler().postDelayed(() -> respondedMessages.remove(messageId), 750);
+                    }
 
                     //..............................................................................
-
-                    Bundle bundle = new Bundle();
-                    bundle.putCharSequence(remoteInput.getResultKey(), botReplyMessage);
-
-                    RemoteInput.addResultsToIntent(new RemoteInput[]{remoteInput}, intent, bundle);
-
-                    try {
-                        Log.d(TAG, "sender's message: " + message);
-
-                        action.actionIntent.send(this, 0, intent);
-
-                    } catch (PendingIntent.CanceledException e) {
-                        Log.e(TAG, "sendAutoReply: ", e);
-                    }
+                    
                     break;
                 }
             }
+        }
+    }
+
+//    ----------------------------------------------------------------------------------------------
+
+    private void send(Notification.Action action, String botReplyMessage) {
+
+        RemoteInput remoteInput = action.getRemoteInputs()[0];
+
+        Intent intent = new Intent();
+
+        Bundle bundle = new Bundle();
+        bundle.putCharSequence(remoteInput.getResultKey(), botReplyMessage);
+
+        RemoteInput.addResultsToIntent(new RemoteInput[]{remoteInput}, intent, bundle);
+
+        try {
+            action.actionIntent.send(this, 0, intent);
+        } catch (PendingIntent.CanceledException e) {
+            Log.e(TAG, "sendAutoReply: ", e);
         }
     }
 

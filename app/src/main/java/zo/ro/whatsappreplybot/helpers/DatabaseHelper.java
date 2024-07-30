@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import zo.ro.whatsappreplybot.models.Message;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    private static final String TAG = "MADARA";
     private static final String DATABASE_NAME = "whatsappMessages.db";
     private static final int DATABASE_VERSION = 1; // Increment version for schema change
     public static final String TABLE_MESSAGES = "messages";
@@ -76,26 +78,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public List<Message> getLast5MessagesBySender(String sender) {
         List<Message> messages = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
 
-        String query = "SELECT * FROM " + TABLE_MESSAGES + " WHERE " + COLUMN_SENDER + " = ? " +
-                "ORDER BY " + COLUMN_TIMESTAMP + " DESC LIMIT 5";
-        Cursor cursor = db.rawQuery(query, new String[] { sender });
+        try {
+            // Ensure the database is opened
+            db = this.getReadableDatabase();
 
-        if (cursor.moveToFirst()) {
-            do {
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
-                String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
-                String timestamp = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TIMESTAMP));
-                String reply = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REPLY));
+            String query = "SELECT * FROM " + TABLE_MESSAGES + " WHERE " + COLUMN_SENDER + " = ? " +
+                    "ORDER BY " + COLUMN_TIMESTAMP + " DESC LIMIT 5";
+            cursor = db.rawQuery(query, new String[]{sender});
 
-                Message msg = new Message(id, sender, message, timestamp, reply);
-                messages.add(msg);
-            } while (cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
+                    String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
+                    String timestamp = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TIMESTAMP));
+                    String reply = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REPLY));
+
+                    Message msg = new Message(id, sender, message, timestamp, reply);
+                    messages.add(msg);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "getLast5MessagesBySender: ", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
         }
 
-        cursor.close();
-        db.close();
         return messages;
     }
+
 }

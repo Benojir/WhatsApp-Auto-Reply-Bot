@@ -35,7 +35,7 @@ public class GenerateReplyUsingChatGPT {
 
     public GenerateReplyUsingChatGPT(Context context, SharedPreferences sharedPreferences, WhatsAppMessageHandler whatsAppMessageHandler) {
         this.messageHandler = whatsAppMessageHandler;
-        API_KEY = sharedPreferences.getString("openai_api_key", "");
+        API_KEY = sharedPreferences.getString("openai_api_key", "").trim();
         GPT_MODEL = sharedPreferences.getString("gpt_model", "gpt-4o-mini");
         defaultReplyMessage = context.getString(R.string.default_bot_message);
     }
@@ -102,17 +102,20 @@ public class GenerateReplyUsingChatGPT {
                             .build();
 
                     client.newCall(request).enqueue(new Callback() {
+
                         @Override
-                        public void onFailure(@NonNull Call call, IOException e) {
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
                             Log.e(TAG, "onFailure: ", e);
                             listener.onReplyGenerated(defaultReplyMessage);
                         }
 
                         @Override
                         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
                             if (!response.isSuccessful()) {
                                 listener.onReplyGenerated(defaultReplyMessage);
                                 Log.d(TAG, "onResponse: " + response.code());
+                                return;
                             }
 
                             ResponseBody body = response.body();
@@ -124,7 +127,7 @@ public class GenerateReplyUsingChatGPT {
                                 if (chatGPTReply != null) {
                                     listener.onReplyGenerated(chatGPTReply);
                                 } else {
-                                    Log.e(TAG, "onResponse: chatGPTReply is null");
+                                    Log.d(TAG, "onResponse: chatGPTReply is null");
                                     listener.onReplyGenerated(defaultReplyMessage);
                                     Log.d(TAG, "onResponse: " + responseData);
                                 }
@@ -134,7 +137,6 @@ public class GenerateReplyUsingChatGPT {
                             }
                         }
                     });
-
                 } catch (Exception e) {
                     Log.e(TAG, "generateReply: ", e);
                 }

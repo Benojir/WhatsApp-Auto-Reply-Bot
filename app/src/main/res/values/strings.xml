@@ -4,18 +4,18 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="general_header">General</string>
     <string name="bot_enable_summary_off">Auto reply is turned off.</string>
-    <string name="enable_bot_title">Auto reply</string>
+    <string name="enable_bot_title">Auto Reply</string>
     <string name="bot_enable_summary_on">Auto reply turned on.</string>
-    <string name="default_message_title">Default reply message</string>
-    <string name="enable_group_reply_title">Group reply</string>
+    <string name="default_message_title">Reply Message</string>
+    <string name="enable_group_reply_title">Group Reply</string>
     <string name="group_reply_enable_summary_off">Bot will not reply to group\'s messages.</string>
     <string name="group_reply_enable_summary_on">Bot will reply to incoming group messages.</string>
-    <string name="reply_prefix_title">Prefix message</string>
+    <string name="reply_prefix_title">Prefix Message</string>
     <string name="ai_reply_header">AI Reply</string>
     <string name="ai_reply_enable_summary_off">ChatGPT reply is off</string>
     <string name="ai_reply_enable_summary_on">ChatGPT will reply to the messages</string>
-    <string name="enable_ai_reply_title">ChatGPT reply</string>
-    <string name="api_key_title">OpenAI api key</string>
-    <string name="gpt_model_title">ChatGPT model</string>
+    <string name="enable_ai_reply_title">ChatGPT Reply</string>
+    <string name="api_key_title">OpenAI API Key</string>
+    <string name="gpt_model_title">ChatGPT Model</string>
     <string name="default_reply_prefix">*Bot reply:*</string>
 </resources>

@@ -54,7 +54,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
                 sendAutoReply(statusBarNotification, text.toString());
 
-                new Handler().postDelayed(() -> respondedMessages.remove(messageId), 700);
+                new Handler().postDelayed(() -> respondedMessages.remove(messageId), 750);
             }
 
             // Clear the set if it reaches size 50 for ram memory free // but no necessary currently

@@ -1,0 +1,58 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/general_header">
+
+        <SwitchPreferenceCompat
+            app:key="is_bot_enabled"
+            app:summaryOff="@string/bot_enable_summary_off"
+            app:summaryOn="@string/bot_enable_summary_on"
+            app:title="@string/enable_bot_title" />
+
+        <EditTextPreference
+            app:dependency="is_bot_enabled"
+            app:key="default_reply_message"
+            app:title="@string/default_message_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:dependency="is_bot_enabled"
+            app:key="is_group_reply_enabled"
+            app:summaryOff="@string/group_reply_enable_summary_off"
+            app:summaryOn="@string/group_reply_enable_summary_on"
+            app:title="@string/enable_group_reply_title" />
+
+        <EditTextPreference
+            app:dependency="is_bot_enabled"
+            app:key="reply_prefix_message"
+            app:title="@string/reply_prefix_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/ai_reply_header">
+
+        <SwitchPreferenceCompat
+            app:dependency="is_bot_enabled"
+            app:key="is_ai_reply_enabled"
+            app:summaryOff="@string/ai_reply_enable_summary_off"
+            app:summaryOn="@string/ai_reply_enable_summary_on"
+            app:title="@string/enable_ai_reply_title" />
+
+        <EditTextPreference
+            app:dependency="is_ai_reply_enabled"
+            app:key="openai_api_key"
+            app:title="@string/api_key_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:dependency="is_ai_reply_enabled"
+            app:defaultValue="gpt-3.5-turbo"
+            app:entries="@array/gpt_model_entries"
+            app:entryValues="@array/gpt_model_values"
+            app:key="gpt_model"
+            app:title="@string/gpt_model_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

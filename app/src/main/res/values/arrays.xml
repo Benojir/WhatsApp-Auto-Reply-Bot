@@ -1,0 +1,16 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="gpt_model_entries">
+        <item>GPT 3.5 Turbo</item>
+        <item>GPT 4</item>
+        <item>GPT 4o</item>
+        <item>GPT 4o Mini</item>
+    </string-array>
+
+    <string-array name="gpt_model_values">
+        <item>gpt-3.5-turbo</item>
+        <item>gpt-4</item>
+        <item>gpt-4o</item>
+        <item>gpt-4o-mini</item>
+    </string-array>
+</resources>

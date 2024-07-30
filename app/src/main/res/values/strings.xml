@@ -1,4 +1,35 @@
 <resources>
     <string name="app_name">WhatsApp Reply Bot</string>
     <string name="default_bot_message">I am not available right now. I will be back soon.</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="general_header">General</string>
+    <string name="bot_enable_summary_off">Auto reply is turned off.</string>
+    <string name="enable_bot_title">Auto reply</string>
+    <string name="bot_enable_summary_on">Auto reply turned on.</string>
+    <string name="default_message_title">Default reply message</string>
+    <string name="enable_group_reply_title">Group reply</string>
+    <string name="group_reply_enable_summary_off">Bot will not reply to group\'s messages.</string>
+    <string name="group_reply_enable_summary_on">Bot will reply to incoming group messages.</string>
+    <string name="reply_prefix_title">Prefix message</string>
+    <string name="ai_reply_header">AI Reply</string>
+    <string name="ai_reply_enable_summary_off">ChatGPT reply is off</string>
+    <string name="ai_reply_enable_summary_on">ChatGPT will reply to the messages</string>
+    <string name="enable_ai_reply_title">ChatGPT reply</string>
+    <string name="api_key_title">OpenAI api key</string>
+    <string name="gpt_model_title">ChatGPT model</string>
 </resources>

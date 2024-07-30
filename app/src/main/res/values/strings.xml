@@ -12,10 +12,10 @@
     <string name="group_reply_enable_summary_on">Bot will reply to incoming group messages.</string>
     <string name="reply_prefix_title">Prefix Message</string>
     <string name="ai_reply_header">AI Reply</string>
-    <string name="ai_reply_enable_summary_off">ChatGPT reply is off</string>
-    <string name="ai_reply_enable_summary_on">ChatGPT will reply to the messages</string>
-    <string name="enable_ai_reply_title">ChatGPT Reply</string>
-    <string name="api_key_title">OpenAI API Key</string>
-    <string name="llm_model_title">ChatGPT Model</string>
+    <string name="ai_reply_enable_summary_off">AI reply is off</string>
+    <string name="ai_reply_enable_summary_on">AI will reply to the messages</string>
+    <string name="enable_ai_reply_title">AI Reply</string>
+    <string name="api_key_title">API Key</string>
+    <string name="llm_model_title">LLM Model</string>
     <string name="default_reply_prefix">*Bot reply:*</string>
 </resources>

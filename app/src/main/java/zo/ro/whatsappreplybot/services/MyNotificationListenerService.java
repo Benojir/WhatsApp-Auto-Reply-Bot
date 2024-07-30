@@ -187,7 +187,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
     private boolean isAIConfigured() {
         boolean isAIConfigured = false;
         if (sharedPreferences.getBoolean("is_ai_reply_enabled", false)) {
-            if (!sharedPreferences.getString("openai_api_key", "").isEmpty()) {
+            if (!sharedPreferences.getString("api_key", "").isEmpty()) {
                 isAIConfigured = true;
             }
         }

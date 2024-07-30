@@ -28,15 +28,15 @@ public class GenerateReplyUsingChatGPT {
     private static final String TAG = "MADARA";
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
     private final String API_KEY;
-    private final String GPT_MODEL;
+    private final String LLM_MODEL;
     private final WhatsAppMessageHandler messageHandler;
     private List<Message> messagesList;
     private final String defaultReplyMessage;
 
     public GenerateReplyUsingChatGPT(Context context, SharedPreferences sharedPreferences, WhatsAppMessageHandler whatsAppMessageHandler) {
         this.messageHandler = whatsAppMessageHandler;
-        API_KEY = sharedPreferences.getString("openai_api_key", "").trim();
-        GPT_MODEL = sharedPreferences.getString("gpt_model", "gpt-4o-mini");
+        API_KEY = sharedPreferences.getString("api_key", "").trim();
+        LLM_MODEL = sharedPreferences.getString("llm_model", "gpt-4o-mini");
         defaultReplyMessage = context.getString(R.string.default_bot_message);
     }
 
@@ -82,7 +82,7 @@ public class GenerateReplyUsingChatGPT {
                     httpRequestMessages.put(userRole1);
                     httpRequestMessages.put(userRole2);
 
-                    container.put("model", GPT_MODEL);
+                    container.put("model", LLM_MODEL);
                     container.put("messages", httpRequestMessages);
 //                container.put("temperature", 0.7);
 

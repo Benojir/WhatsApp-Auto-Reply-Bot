@@ -16,6 +16,6 @@
     <string name="ai_reply_enable_summary_on">ChatGPT will reply to the messages</string>
     <string name="enable_ai_reply_title">ChatGPT Reply</string>
     <string name="api_key_title">OpenAI API Key</string>
-    <string name="gpt_model_title">ChatGPT Model</string>
+    <string name="llm_model_title">ChatGPT Model</string>
     <string name="default_reply_prefix">*Bot reply:*</string>
 </resources>

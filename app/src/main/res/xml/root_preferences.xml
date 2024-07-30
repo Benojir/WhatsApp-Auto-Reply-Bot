@@ -44,17 +44,17 @@
 
         <EditTextPreference
             app:dependency="is_ai_reply_enabled"
-            app:key="openai_api_key"
+            app:key="api_key"
             app:title="@string/api_key_title"
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
             app:dependency="is_ai_reply_enabled"
-            app:defaultValue="gpt-3.5-turbo"
-            app:entries="@array/gpt_model_entries"
-            app:entryValues="@array/gpt_model_values"
-            app:key="gpt_model"
-            app:title="@string/gpt_model_title"
+            app:defaultValue="gpt-4o"
+            app:entries="@array/llm_model_entries"
+            app:entryValues="@array/llm_model_values"
+            app:key="llm_model"
+            app:title="@string/llm_model_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

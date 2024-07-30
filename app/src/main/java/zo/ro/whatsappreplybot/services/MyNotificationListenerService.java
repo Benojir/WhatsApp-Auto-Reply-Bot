@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.RemoteInput;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +27,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
     private static final String TAG = "MADARA";
     private final String notificationChannelId = "wa_auto_reply_channel";
     private final Set<String> respondedMessages = new HashSet<>();
+    private final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
     @Override
     public void onNotificationPosted(StatusBarNotification statusBarNotification) {
@@ -48,13 +51,21 @@ public class MyNotificationListenerService extends NotificationListenerService {
             // Process the message and send auto-reply
             if (text != null && !text.toString().isEmpty()) {
 
-                if (isGroupMessage(title)){
-                    Log.d(TAG, "onNotificationPosted: group message it is " + title);
+                if (sharedPreferences.getBoolean("is_bot_enabled", true)) {
+
+                    boolean groupReplyEnabled = sharedPreferences.getBoolean("is_group_reply_enabled", false);
+
+                    if (groupReplyEnabled){
+                        sendAutoReply(statusBarNotification, text.toString());
+                    } else {
+                        if (!isGroupMessage(title)){
+                            Log.d(TAG, "onNotificationPosted: it is a group message " + title);
+                            sendAutoReply(statusBarNotification, text.toString());
+                        }
+                    }
+
+                    new Handler().postDelayed(() -> respondedMessages.remove(messageId), 750);
                 }
-
-                sendAutoReply(statusBarNotification, text.toString());
-
-                new Handler().postDelayed(() -> respondedMessages.remove(messageId), 750);
             }
 
             // Clear the set if it reaches size 50 for ram memory free // but no necessary currently
@@ -81,7 +92,23 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
                     Intent intent = new Intent();
 
-                    String botReplyMessage = getString(R.string.default_bot_message);
+                    //..............................................................................
+
+                    String botReplyMessage;
+
+                    if (sharedPreferences.contains("reply_prefix_message")) {
+                        String replyPrefix = sharedPreferences.getString("reply_prefix_message", "");
+
+                        if (!replyPrefix.isEmpty()) {
+                            botReplyMessage = replyPrefix + " " + sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message));
+                        } else {
+                            botReplyMessage = sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message));
+                        }
+                    } else {
+                        botReplyMessage = sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message));
+                    }
+
+                    //..............................................................................
 
                     Bundle bundle = new Bundle();
                     bundle.putCharSequence(remoteInput.getResultKey(), botReplyMessage);

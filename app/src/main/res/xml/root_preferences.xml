@@ -6,6 +6,7 @@
             app:key="is_bot_enabled"
             app:summaryOff="@string/bot_enable_summary_off"
             app:summaryOn="@string/bot_enable_summary_on"
+            app:defaultValue="true"
             app:title="@string/enable_bot_title" />
 
         <EditTextPreference

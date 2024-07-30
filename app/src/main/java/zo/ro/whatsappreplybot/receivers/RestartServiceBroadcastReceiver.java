@@ -4,11 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.provider.Settings;
-import android.text.TextUtils;
+import android.content.SharedPreferences;
 import android.util.Log;
-import android.content.ComponentName;
 
+import androidx.preference.PreferenceManager;
+
+import zo.ro.whatsappreplybot.helpers.NotificationHelper;
 import zo.ro.whatsappreplybot.services.MyNotificationListenerService;
 
 public class RestartServiceBroadcastReceiver extends BroadcastReceiver {
@@ -19,29 +20,17 @@ public class RestartServiceBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (!isNotificationServiceRunning(context)) {
-            Intent serviceIntent = new Intent(context, MyNotificationListenerService.class);
-            context.startService(serviceIntent);
-            Log.d(TAG, "Notification service started after boot");
-        } else {
-            Log.d(TAG, "Notification service is already running");
-        }
-    }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-    private boolean isNotificationServiceRunning(Context context) {
-        String packageName = context.getPackageName();
-        final String flat = Settings.Secure.getString(context.getContentResolver(), "enabled_notification_listeners");
-        if (!TextUtils.isEmpty(flat)) {
-            final String[] names = flat.split(":");
-            for (String name : names) {
-                final ComponentName componentName = ComponentName.unflattenFromString(name);
-                if (componentName != null) {
-                    if (TextUtils.equals(packageName, componentName.getPackageName())) {
-                        return true;
-                    }
-                }
+        if (sharedPreferences.getBoolean("is_bot_enabled", true)) {
+            if (!NotificationHelper.isNotificationServiceRunning(context)) {
+                Intent serviceIntent = new Intent(context, MyNotificationListenerService.class);
+                context.startService(serviceIntent);
+                Log.d(TAG, "Notification service started after boot");
+            } else {
+                Log.d(TAG, "Notification service is already running");
             }
         }
-        return false;
+
     }
 }

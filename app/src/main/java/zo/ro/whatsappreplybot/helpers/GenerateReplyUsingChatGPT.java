@@ -51,91 +51,94 @@ public class GenerateReplyUsingChatGPT {
             JSONObject userRole1 = new JSONObject();
             JSONObject userRole2 = new JSONObject();
 
-            messageHandler.getLast5Messages(sender, messages -> messagesList = messages);
+            messageHandler.getLast5Messages(sender, messages -> {
 
-            StringBuilder chatHistory = getChatHistory();
+                messagesList = messages;
 
-            try {
+                StringBuilder chatHistory = getChatHistory();
 
-                systemRole.put("role", "system");
-                systemRole.put(
-                        "content", "You are a WhatsApp auto-reply bot. " +
-                        "Your task is to read the provided previous chat history and reply to the most recent incoming message. " +
-                        "Always respond in Bengali. Be polite, context-aware, and ensure your replies are relevant to the conversation."
-                );
+                try {
 
-                userRole1.put("role", "user");
+                    systemRole.put("role", "system");
+                    systemRole.put(
+                            "content", "You are a WhatsApp auto-reply bot. " +
+                                    "Your task is to read the provided previous chat history and reply to the most recent incoming message. " +
+                                    "Always respond in Bengali. Be polite, context-aware, and ensure your replies are relevant to the conversation."
+                    );
 
-                if (chatHistory.toString().isEmpty()) {
-                    userRole1.put("content", "There are no any previous chat history. This is the first message from the sender.");
-                } else {
-                    userRole1.put("content", "Previous chat history: " + chatHistory);
-                }
+                    userRole1.put("role", "user");
 
-                userRole2.put("role", "user");
-                userRole2.put("content", "This is the most recent message from the sender: " + message);
+                    if (chatHistory.toString().isEmpty()) {
+                        userRole1.put("content", "There are no any previous chat history. This is the first message from the sender.");
+                    } else {
+                        userRole1.put("content", "Previous chat history: " + chatHistory);
+                    }
+
+                    userRole2.put("role", "user");
+                    userRole2.put("content", "This is the most recent message from the sender: " + message);
 
 
-                httpRequestMessages.put(systemRole);
-                httpRequestMessages.put(userRole1);
-                httpRequestMessages.put(userRole2);
+                    httpRequestMessages.put(systemRole);
+                    httpRequestMessages.put(userRole1);
+                    httpRequestMessages.put(userRole2);
 
-                container.put("model", GPT_MODEL);
-                container.put("messages", httpRequestMessages);
+                    container.put("model", GPT_MODEL);
+                    container.put("messages", httpRequestMessages);
 //                container.put("temperature", 0.7);
 
-                OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient();
 
-                MediaType JSON = MediaType.get("application/json; charset=utf-8");
+                    MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-                String jsonBody = container.toString();
+                    String jsonBody = container.toString();
 
-                RequestBody requestBody = RequestBody.create(jsonBody, JSON);
+                    RequestBody requestBody = RequestBody.create(jsonBody, JSON);
 
-                Request request = new Request.Builder()
-                        .url(API_URL)
-                        .addHeader("Content-Type", "application/json")
-                        .addHeader("Authorization", "Bearer " + API_KEY)
-                        .post(requestBody)
-                        .build();
+                    Request request = new Request.Builder()
+                            .url(API_URL)
+                            .addHeader("Content-Type", "application/json")
+                            .addHeader("Authorization", "Bearer " + API_KEY)
+                            .post(requestBody)
+                            .build();
 
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, IOException e) {
-                        Log.e(TAG, "onFailure: ", e);
-                        listener.onReplyGenerated(defaultReplyMessage);
-                    }
-
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
+                    client.newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, IOException e) {
+                            Log.e(TAG, "onFailure: ", e);
                             listener.onReplyGenerated(defaultReplyMessage);
-                            Log.d(TAG, "onResponse: " + response.code());
                         }
 
-                        ResponseBody body = response.body();
-
-                        if (body != null) {
-                            String responseData = body.string();
-                            String chatGPTReply = parseResponse(responseData);
-
-                            if (chatGPTReply != null) {
-                                listener.onReplyGenerated(chatGPTReply);
-                            } else {
-                                Log.e(TAG, "onResponse: chatGPTReply is null");
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
                                 listener.onReplyGenerated(defaultReplyMessage);
-                                Log.d(TAG, "onResponse: " + responseData);
+                                Log.d(TAG, "onResponse: " + response.code());
                             }
-                        } else {
-                            Log.e(TAG, "onResponse: Response body is null");
-                            listener.onReplyGenerated(defaultReplyMessage);
-                        }
-                    }
-                });
 
-            } catch (Exception e) {
-                Log.e(TAG, "generateReply: ", e);
-            }
+                            ResponseBody body = response.body();
+
+                            if (body != null) {
+                                String responseData = body.string();
+                                String chatGPTReply = parseResponse(responseData);
+
+                                if (chatGPTReply != null) {
+                                    listener.onReplyGenerated(chatGPTReply);
+                                } else {
+                                    Log.e(TAG, "onResponse: chatGPTReply is null");
+                                    listener.onReplyGenerated(defaultReplyMessage);
+                                    Log.d(TAG, "onResponse: " + responseData);
+                                }
+                            } else {
+                                Log.e(TAG, "onResponse: Response body is null");
+                                listener.onReplyGenerated(defaultReplyMessage);
+                            }
+                        }
+                    });
+
+                } catch (Exception e) {
+                    Log.e(TAG, "generateReply: ", e);
+                }
+            });
         }).start();
     }
 
@@ -144,7 +147,9 @@ public class GenerateReplyUsingChatGPT {
     private @NonNull StringBuilder getChatHistory() {
         StringBuilder chatHistory = new StringBuilder();
 
-        if (!messagesList.isEmpty()) {
+        Log.d(TAG, "getChatHistory: " + messagesList.size());
+
+        if (messagesList != null && !messagesList.isEmpty()) {
 
             for (Message msg : messagesList) {
 

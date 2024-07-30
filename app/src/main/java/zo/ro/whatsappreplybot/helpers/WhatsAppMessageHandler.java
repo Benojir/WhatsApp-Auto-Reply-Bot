@@ -2,25 +2,19 @@ package zo.ro.whatsappreplybot.helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import zo.ro.whatsappreplybot.models.Message;
 
 public class WhatsAppMessageHandler {
 
     private final DatabaseHelper dbHelper;
-    private final ExecutorService executorService;
 
     public WhatsAppMessageHandler(Context context) {
         dbHelper = new DatabaseHelper(context);
-        executorService = Executors.newSingleThreadExecutor();
     }
 
 //    ----------------------------------------------------------------------------------------------
@@ -34,11 +28,10 @@ public class WhatsAppMessageHandler {
 //    ----------------------------------------------------------------------------------------------
 
     public void getLast5Messages(String sender, OnMessagesRetrievedListener listener) {
-        executorService.execute(() -> {
+        new Thread(() -> {
             List<Message> messages = dbHelper.getLast5MessagesBySender(sender);
-            // Use a handler to post the result back to the main thread
-            new Handler(Looper.getMainLooper()).post(() -> listener.onMessagesRetrieved(messages));
-        });
+            listener.onMessagesRetrieved(messages);
+        }).start();
     }
 
     public interface OnMessagesRetrievedListener {

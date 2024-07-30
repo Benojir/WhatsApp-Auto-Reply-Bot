@@ -63,7 +63,6 @@ public class MyNotificationListenerService extends NotificationListenerService {
                         sendAutoReply(statusBarNotification, title, text.toString());
                     } else {
                         if (!isGroupMessage(title)){
-                            Log.d(TAG, "onNotificationPosted: it is a group message " + title);
                             sendAutoReply(statusBarNotification, title, text.toString());
                         }
                     }

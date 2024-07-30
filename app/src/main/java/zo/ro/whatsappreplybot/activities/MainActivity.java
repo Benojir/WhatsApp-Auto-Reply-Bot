@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+//        ------------------------------------------------------------------------------------------
+
         if (!isNotificationServiceEnabled()) {
             new AlertDialog.Builder(this)
                     .setTitle("Permission Required")
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+//        ------------------------------------------------------------------------------------------
 
         Log.d(TAG, "onCreate: " + CustomMethods.getCurrentDateTime());
         binding.settingsBtn.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));

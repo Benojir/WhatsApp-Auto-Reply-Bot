@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import zo.ro.whatsappreplybot.R;
+import zo.ro.whatsappreplybot.helpers.GenerateReplyUsingChatGPT;
+import zo.ro.whatsappreplybot.helpers.WhatsAppMessageHandler;
 
 public class MyNotificationListenerService extends NotificationListenerService {
 
@@ -28,12 +30,12 @@ public class MyNotificationListenerService extends NotificationListenerService {
     private final String notificationChannelId = "wa_auto_reply_channel";
     private final Set<String> respondedMessages = new HashSet<>();
     private SharedPreferences sharedPreferences;
+    private WhatsAppMessageHandler messageHandler;
+    private String botReplyMessage;
 
     @Override
     public void onNotificationPosted(StatusBarNotification statusBarNotification) {
         super.onNotificationPosted(statusBarNotification);
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         if (statusBarNotification.getPackageName().equalsIgnoreCase("com.whatsapp")) {
 
@@ -58,11 +60,11 @@ public class MyNotificationListenerService extends NotificationListenerService {
                     boolean groupReplyEnabled = sharedPreferences.getBoolean("is_group_reply_enabled", false);
 
                     if (groupReplyEnabled){
-                        sendAutoReply(statusBarNotification, text.toString());
+                        sendAutoReply(statusBarNotification, title, text.toString());
                     } else {
                         if (!isGroupMessage(title)){
                             Log.d(TAG, "onNotificationPosted: it is a group message " + title);
-                            sendAutoReply(statusBarNotification, text.toString());
+                            sendAutoReply(statusBarNotification, title, text.toString());
                         }
                     }
 
@@ -79,7 +81,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
 //    ----------------------------------------------------------------------------------------------
 
-    private void sendAutoReply(StatusBarNotification statusBarNotification, String message) {
+    private void sendAutoReply(StatusBarNotification statusBarNotification, String sender, String message) {
 
         Notification.Action[] actions = statusBarNotification.getNotification().actions;
 
@@ -96,19 +98,16 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
                     //..............................................................................
 
-                    String botReplyMessage;
+                    String replyPrefix = sharedPreferences.getString("reply_prefix_message", getString(R.string.default_reply_prefix));
+                    botReplyMessage = replyPrefix + " " + sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message));
 
-                    if (sharedPreferences.contains("reply_prefix_message")) {
-                        String replyPrefix = sharedPreferences.getString("reply_prefix_message", "");
-
-                        if (!replyPrefix.isEmpty()) {
-                            botReplyMessage = replyPrefix + " " + sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message));
-                        } else {
-                            botReplyMessage = sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message));
-                        }
-                    } else {
-                        botReplyMessage = sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message));
+                    if (isAIConfigured()) {
+                        GenerateReplyUsingChatGPT generateReplyUsingChatGPT = new GenerateReplyUsingChatGPT(this, sharedPreferences, messageHandler);
+                        generateReplyUsingChatGPT.generateReply(sender, message, reply -> botReplyMessage = reply);
+                        botReplyMessage = replyPrefix + " " + botReplyMessage;
                     }
+
+                    messageHandler.handleIncomingMessage(sender, message, botReplyMessage.trim());
 
                     //..............................................................................
 
@@ -136,6 +135,9 @@ public class MyNotificationListenerService extends NotificationListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        messageHandler = new WhatsAppMessageHandler(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         createNotificationChannel();
 
@@ -167,4 +169,18 @@ public class MyNotificationListenerService extends NotificationListenerService {
     private boolean isGroupMessage(String title) {
         return title != null && title.contains(":");
     }
+
+//    ----------------------------------------------------------------------------------------------
+
+    private boolean isAIConfigured() {
+        boolean isAIConfigured = false;
+        if (sharedPreferences.getBoolean("is_ai_reply_enabled", false)) {
+            if (!sharedPreferences.getString("openai_api_key", "").isEmpty()) {
+                isAIConfigured = true;
+            }
+        }
+        return isAIConfigured;
+    }
+
+//    ----------------------------------------------------------------------------------------------
 }

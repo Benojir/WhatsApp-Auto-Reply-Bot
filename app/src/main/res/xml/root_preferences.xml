@@ -37,6 +37,7 @@
         <SwitchPreferenceCompat
             app:dependency="is_bot_enabled"
             app:key="is_ai_reply_enabled"
+            defaultValue="false"
             app:summaryOff="@string/ai_reply_enable_summary_off"
             app:summaryOn="@string/ai_reply_enable_summary_on"
             app:title="@string/enable_ai_reply_title" />

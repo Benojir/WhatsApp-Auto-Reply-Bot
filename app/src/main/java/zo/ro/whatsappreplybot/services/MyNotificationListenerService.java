@@ -98,15 +98,21 @@ public class MyNotificationListenerService extends NotificationListenerService {
                     String replyPrefix = sharedPreferences.getString("reply_prefix_message", getString(R.string.default_reply_prefix)).trim();
 
                     if (isAIConfigured()) {
-                        GenerateReplyUsingChatGPT generateReplyUsingChatGPT = new GenerateReplyUsingChatGPT(this, sharedPreferences, messageHandler);
 
+                        String llmModel = sharedPreferences.getString("llm_model", "gpt-4o-mini").toLowerCase();
+
+                        if (llmModel.contains("gpt")){
+                            Log.d(TAG, "processAutoReply: " + llmModel);
+                        }
+
+                        GenerateReplyUsingChatGPT generateReplyUsingChatGPT = new GenerateReplyUsingChatGPT(this, sharedPreferences, messageHandler);
                         generateReplyUsingChatGPT.generateReply(sender, message, reply -> {
                             botReplyMessage = replyPrefix + " " + reply;
                             messageHandler.handleIncomingMessage(sender, message, botReplyMessage);
                             send(action, botReplyMessage);
                             new Handler(Looper.getMainLooper()).postDelayed(() -> respondedMessages.remove(messageId), 750);
-                            Log.d(TAG, "processAutoReply: A.I Reply");
                         });
+
                     } else {
                         botReplyMessage = (replyPrefix + " " + sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message))).trim();
                         messageHandler.handleIncomingMessage(sender, message, botReplyMessage);

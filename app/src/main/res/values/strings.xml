@@ -32,4 +32,5 @@
     <string name="enable_ai_reply_title">ChatGPT reply</string>
     <string name="api_key_title">OpenAI api key</string>
     <string name="gpt_model_title">ChatGPT model</string>
+    <string name="default_reply_prefix">*Bot reply:*</string>
 </resources>

@@ -9,14 +9,15 @@ import android.text.TextUtils;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import zo.ro.whatsappreplybot.R;
+import zo.ro.whatsappreplybot.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         if (!isNotificationServiceEnabled()) {
             new AlertDialog.Builder(this)
@@ -26,7 +27,11 @@ public class MainActivity extends AppCompatActivity {
                     .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                     .show();
         }
+
+        binding.settingsBtn.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
     }
+
+//    ----------------------------------------------------------------------------------------------
 
     private boolean isNotificationServiceEnabled() {
         String pkgName = getPackageName();

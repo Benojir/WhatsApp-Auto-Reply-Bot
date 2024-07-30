@@ -12,6 +12,7 @@
             app:dependency="is_bot_enabled"
             app:key="default_reply_message"
             app:title="@string/default_message_title"
+            app:defaultValue="@string/default_bot_message"
             app:useSimpleSummaryProvider="true" />
 
         <SwitchPreferenceCompat
@@ -25,6 +26,7 @@
             app:dependency="is_bot_enabled"
             app:key="reply_prefix_message"
             app:title="@string/reply_prefix_title"
+            app:defaultValue="@string/default_reply_prefix"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

@@ -46,7 +46,7 @@ public class CustomReplyGenerator {
             StringBuilder chatHistory = getChatHistory(messages);
             StringBuilder prompt = buildPrompt(message, chatHistory);
 
-            
+
             OkHttpClient client = new OkHttpClient();
 
             RequestBody requestBody = new FormBody.Builder()

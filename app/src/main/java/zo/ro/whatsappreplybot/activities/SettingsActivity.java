@@ -1,12 +1,15 @@
 package zo.ro.whatsappreplybot.activities;
 
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import zo.ro.whatsappreplybot.R;
+import zo.ro.whatsappreplybot.others.InputFilterMinMax;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -30,6 +33,14 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+            EditTextPreference editTextPreference = findPreference("max_reply");
+            if (editTextPreference != null) {
+                editTextPreference.setOnBindEditTextListener(editText -> {
+                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    editText.setFilters(new InputFilter[]{new InputFilterMinMax(1, 999999999)});
+                });
+            }
         }
     }
 }

@@ -114,4 +114,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return messages;
     }
 
+    public List<Message> getAllMessagesBySender(String sender) {
+        List<Message> messages = new ArrayList<>();
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+
+        try {
+            // Ensure the database is opened
+            db = this.getReadableDatabase();
+
+            String query = "SELECT * FROM " + TABLE_MESSAGES + " WHERE " + COLUMN_SENDER + " = ? " +
+                    "ORDER BY " + COLUMN_TIMESTAMP + " DESC";
+            cursor = db.rawQuery(query, new String[]{sender});
+
+            if (cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
+                    String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
+                    String timestamp = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TIMESTAMP));
+                    String reply = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REPLY));
+
+                    Message msg = new Message(id, sender, message, timestamp, reply);
+                    messages.add(msg);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "getLast5MessagesBySender: ", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+
+        return messages;
+    }
 }

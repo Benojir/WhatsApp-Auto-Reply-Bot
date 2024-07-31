@@ -2,6 +2,8 @@ package zo.ro.whatsappreplybot.helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,6 +33,13 @@ public class WhatsAppMessageHandler {
         new Thread(() -> {
             List<Message> messages = dbHelper.getLast5MessagesBySender(sender);
             listener.onMessagesRetrieved(messages);
+        }).start();
+    }
+
+    public void getAllMessagesBySender(String sender, OnMessagesRetrievedListener listener) {
+        new Thread(() -> {
+            List<Message> messages = dbHelper.getAllMessagesBySender(sender);
+            new Handler(Looper.getMainLooper()).post(() -> listener.onMessagesRetrieved(messages));
         }).start();
     }
 

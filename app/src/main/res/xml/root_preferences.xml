@@ -30,6 +30,14 @@
             app:defaultValue="@string/default_reply_prefix"
             app:useSimpleSummaryProvider="true" />
 
+        <EditTextPreference
+            app:dependency="is_bot_enabled"
+            app:key="max_reply"
+            app:title="@string/max_reply_title"
+            app:defaultValue="100"
+            inputType="number"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/ai_reply_header">

@@ -23,6 +23,7 @@ import java.util.Set;
 
 import zo.ro.whatsappreplybot.R;
 import zo.ro.whatsappreplybot.apis.ChatGPTReplyGenerator;
+import zo.ro.whatsappreplybot.apis.CustomReplyGenerator;
 import zo.ro.whatsappreplybot.helpers.WhatsAppMessageHandler;
 
 public class MyNotificationListenerService extends NotificationListenerService {
@@ -109,15 +110,26 @@ public class MyNotificationListenerService extends NotificationListenerService {
                         String llmModel = sharedPreferences.getString("llm_model", "gpt-4o-mini").toLowerCase();
 
                         if (llmModel.contains("gpt")) {
+
                             ChatGPTReplyGenerator chatGPTReplyGenerator = new ChatGPTReplyGenerator(this, sharedPreferences, messageHandler);
+
                             chatGPTReplyGenerator.generateReply(sender, message, reply -> {
                                 botReplyMessage = replyPrefix + " " + reply;
                                 messageHandler.handleIncomingMessage(sender, message, botReplyMessage);
                                 send(action, botReplyMessage);
                                 new Handler(Looper.getMainLooper()).postDelayed(() -> respondedMessages.remove(messageId), 750);
                             });
+
                         } else if (llmModel.startsWith("custom")) {
-                            Log.d(TAG, "processAutoReply: custom gpt");
+
+                            CustomReplyGenerator customReplyGenerator = new CustomReplyGenerator(this, sharedPreferences, messageHandler);
+
+                            customReplyGenerator.generateReply(sender, message, reply -> {
+                                botReplyMessage = replyPrefix + " " + reply;
+                                messageHandler.handleIncomingMessage(sender, message, botReplyMessage);
+                                send(action, botReplyMessage);
+                                new Handler(Looper.getMainLooper()).postDelayed(() -> respondedMessages.remove(messageId), 750);
+                            });
                         }
 
                     } else {

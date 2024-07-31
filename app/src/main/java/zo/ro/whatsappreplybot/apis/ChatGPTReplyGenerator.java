@@ -140,6 +140,7 @@ public class ChatGPTReplyGenerator {
                     });
                 } catch (Exception e) {
                     Log.e(TAG, "generateReply: ", e);
+                    listener.onReplyGenerated(defaultReplyMessage);
                 }
             });
         }).start();

@@ -26,7 +26,7 @@ import zo.ro.whatsappreplybot.models.Message;
 
 public class CustomReplyGenerator {
 
-    private final String API_URL = "https://browser.foganime.com/gpt4free/generate-reply.php";
+    private final String API_URL = "http://localhost:5000/";
     private static final String TAG = "MADARA";
     private final String API_KEY;
     private final String LLM_MODEL;

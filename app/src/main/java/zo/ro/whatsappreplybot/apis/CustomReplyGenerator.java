@@ -1,4 +1,4 @@
-package zo.ro.whatsappreplybot.helpers;
+package zo.ro.whatsappreplybot.apis;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,26 +21,26 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import zo.ro.whatsappreplybot.R;
+import zo.ro.whatsappreplybot.helpers.WhatsAppMessageHandler;
 import zo.ro.whatsappreplybot.models.Message;
 
-public class GenerateReplyUsingChatGPT {
-
+public class CustomReplyGenerator {
+    private final String API_URL = "https://browser.foganime.com/whatsapp-autobot/generate-reply.php";
     private static final String TAG = "MADARA";
-    private static final String API_URL = "https://api.openai.com/v1/chat/completions";
     private final String API_KEY;
     private final String LLM_MODEL;
     private final WhatsAppMessageHandler messageHandler;
     private List<Message> messagesList;
     private final String defaultReplyMessage;
 
-    public GenerateReplyUsingChatGPT(Context context, SharedPreferences sharedPreferences, WhatsAppMessageHandler whatsAppMessageHandler) {
+    public CustomReplyGenerator(Context context, SharedPreferences sharedPreferences, WhatsAppMessageHandler whatsAppMessageHandler) {
         this.messageHandler = whatsAppMessageHandler;
         API_KEY = sharedPreferences.getString("api_key", "").trim();
-        LLM_MODEL = sharedPreferences.getString("llm_model", "gpt-4o-mini");
-        defaultReplyMessage = context.getString(R.string.default_bot_message);
+        LLM_MODEL = sharedPreferences.getString("llm_model", "custom-gpt-4o");
+        defaultReplyMessage = sharedPreferences.getString("default_reply_message", context.getString(R.string.default_bot_message));
     }
 
-    public void generateReply(String sender, String message, OnReplyGeneratedListener listener) {
+    public void generateReply(String sender, String message, CustomReplyGenerator.OnReplyGeneratedListener listener) {
 
         new Thread(() -> {
 
@@ -122,12 +122,12 @@ public class GenerateReplyUsingChatGPT {
 
                             if (body != null) {
                                 String responseData = body.string();
-                                String chatGPTReply = parseResponse(responseData);
+                                String aiReply = parseResponse(responseData);
 
-                                if (chatGPTReply != null) {
-                                    listener.onReplyGenerated(chatGPTReply);
+                                if (aiReply != null) {
+                                    listener.onReplyGenerated(aiReply);
                                 } else {
-                                    Log.d(TAG, "onResponse: chatGPTReply is null");
+                                    Log.d(TAG, "onResponse: ai reply is null");
                                     listener.onReplyGenerated(defaultReplyMessage);
                                     Log.d(TAG, "onResponse: " + responseData);
                                 }
@@ -176,14 +176,9 @@ public class GenerateReplyUsingChatGPT {
     private String parseResponse(String responseData) {
         try {
             JSONObject jsonObject = new JSONObject(responseData);
-            JSONArray choicesArray = jsonObject.getJSONArray("choices");
-            if (choicesArray.length() > 0) {
-                JSONObject choice = choicesArray.getJSONObject(0);
-                JSONObject message = choice.getJSONObject("message");
-                return message.getString("content");
-            }
+            return jsonObject.getString("response");
         } catch (Exception e) {
-            Log.e(TAG, "parseResponse: ", e);
+            Log.d(TAG, "parseResponse: " + e.getMessage());
         }
         return null;
     }

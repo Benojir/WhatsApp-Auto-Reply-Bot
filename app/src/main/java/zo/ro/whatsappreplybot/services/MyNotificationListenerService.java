@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import zo.ro.whatsappreplybot.R;
-import zo.ro.whatsappreplybot.helpers.GenerateReplyUsingChatGPT;
+import zo.ro.whatsappreplybot.apis.ChatGPTReplyGenerator;
 import zo.ro.whatsappreplybot.helpers.WhatsAppMessageHandler;
 
 public class MyNotificationListenerService extends NotificationListenerService {
@@ -112,8 +112,8 @@ public class MyNotificationListenerService extends NotificationListenerService {
                             Log.d(TAG, "processAutoReply: " + llmModel);
                         }
 
-                        GenerateReplyUsingChatGPT generateReplyUsingChatGPT = new GenerateReplyUsingChatGPT(this, sharedPreferences, messageHandler);
-                        generateReplyUsingChatGPT.generateReply(sender, message, reply -> {
+                        ChatGPTReplyGenerator chatGPTReplyGenerator = new ChatGPTReplyGenerator(this, sharedPreferences, messageHandler);
+                        chatGPTReplyGenerator.generateReply(sender, message, reply -> {
                             botReplyMessage = replyPrefix + " " + reply;
                             messageHandler.handleIncomingMessage(sender, message, botReplyMessage);
                             send(action, botReplyMessage);

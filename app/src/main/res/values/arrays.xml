@@ -6,6 +6,7 @@
         <item>GPT 4o</item>
         <item>GPT 4o Mini</item>
         <item>Gemini 1.5 Flash</item>
+        <item>Custom API</item>
     </string-array>
 
     <string-array name="llm_model_values">
@@ -14,5 +15,6 @@
         <item>gpt-4o</item>
         <item>gpt-4o-mini</item>
         <item>gemini-1.5-flash</item>
+        <item>custom-gpt-4o</item>
     </string-array>
 </resources>

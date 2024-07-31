@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -87,7 +88,11 @@ public class ChatGPTReplyGenerator {
                     container.put("messages", httpRequestMessages);
 //                container.put("temperature", 0.7);
 
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(30, TimeUnit.SECONDS)  // Set connect timeout
+                            .readTimeout(30, TimeUnit.SECONDS)     // Set read timeout
+                            .writeTimeout(30, TimeUnit.SECONDS)    // Set write timeout
+                            .build();
 
                     MediaType JSON = MediaType.get("application/json; charset=utf-8");
 

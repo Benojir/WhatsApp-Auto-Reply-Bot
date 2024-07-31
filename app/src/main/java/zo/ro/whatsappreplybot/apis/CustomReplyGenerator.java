@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -47,7 +48,11 @@ public class CustomReplyGenerator {
             StringBuilder prompt = buildPrompt(message, chatHistory);
 
 
-            OkHttpClient client = new OkHttpClient();
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)  // Set connect timeout
+                    .readTimeout(30, TimeUnit.SECONDS)     // Set read timeout
+                    .writeTimeout(30, TimeUnit.SECONDS)    // Set write timeout
+                    .build();
 
             RequestBody requestBody = new FormBody.Builder()
                     .add("prompt", prompt.toString())

@@ -46,7 +46,7 @@ public class CustomReplyGenerator {
             StringBuilder chatHistory = getChatHistory(messages);
             StringBuilder prompt = buildPrompt(message, chatHistory);
 
-
+            
             OkHttpClient client = new OkHttpClient();
 
             RequestBody requestBody = new FormBody.Builder()
@@ -108,7 +108,16 @@ public class CustomReplyGenerator {
 //    ----------------------------------------------------------------------------------------------
 
     private static @NonNull StringBuilder buildPrompt(String message, StringBuilder chatHistory) {
+
         StringBuilder prompt = new StringBuilder();
+
+        if (chatHistory.toString().isEmpty()) {
+            prompt.append("You are a WhatsApp auto-reply bot. Your task is to reply to the incoming message. Response only the chat and do not add any other text.");
+            prompt.append("Always respond in Bengali. Be polite, context-aware, and ensure your replies are relevant to the conversation.");
+            prompt.append("\n\n\nThis is the most recent message from the sender: ").append(message);
+            return prompt;
+        }
+
         prompt.append("You are a WhatsApp auto-reply bot. Your task is to read the provided previous chat history and reply to the most recent incoming message. ");
         prompt.append("Always respond in Bengali. Be polite, context-aware, and ensure your replies are relevant to the conversation.\n\n");
         prompt.append("Previous chat history: \n").append(chatHistory);

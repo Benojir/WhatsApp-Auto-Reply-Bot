@@ -18,5 +18,5 @@
     <string name="api_key_title">API Key</string>
     <string name="llm_model_title">LLM Model</string>
     <string name="default_reply_prefix">*Bot reply:*</string>
-    <string name="max_reply_title">Max reply/Person/Day</string>
+    <string name="max_reply_title">Max reply per person/day</string>
 </resources>

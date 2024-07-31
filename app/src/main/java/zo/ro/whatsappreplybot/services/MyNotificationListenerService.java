@@ -60,16 +60,23 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
                 if (sharedPreferences.getBoolean("is_bot_enabled", true)) {
 
-                    boolean groupReplyEnabled = sharedPreferences.getBoolean("is_group_reply_enabled", false);
+                    int maxReply = Integer.parseInt(sharedPreferences.getString("max_reply", "100"));
 
-                    if (groupReplyEnabled){
-                        processAutoReply(statusBarNotification, title, senderMessage, messageId);
-                    } else {
-                        if (!isGroupMessage(title)){
-                            processAutoReply(statusBarNotification, title, senderMessage, messageId);
-                            Log.d(TAG, "onNotificationPosted: ZZZ");
+                    messageHandler.getAllMessagesBySender(title, messages -> {
+
+                        if (messages != null && messages.size() < maxReply) {
+
+                            boolean groupReplyEnabled = sharedPreferences.getBoolean("is_group_reply_enabled", false);
+
+                            if (groupReplyEnabled) {
+                                processAutoReply(statusBarNotification, title, senderMessage, messageId);
+                            } else {
+                                if (!isGroupMessage(title)) {
+                                    processAutoReply(statusBarNotification, title, senderMessage, messageId);
+                                }
+                            }
                         }
-                    }
+                    });
                 }
             }
 
@@ -101,7 +108,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
                         String llmModel = sharedPreferences.getString("llm_model", "gpt-4o-mini").toLowerCase();
 
-                        if (llmModel.contains("gpt")){
+                        if (llmModel.contains("gpt")) {
                             Log.d(TAG, "processAutoReply: " + llmModel);
                         }
 
@@ -121,7 +128,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
                     }
 
                     //..............................................................................
-                    
+
                     break;
                 }
             }

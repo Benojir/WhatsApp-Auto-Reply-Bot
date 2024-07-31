@@ -68,13 +68,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteOldMessages() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        @SuppressLint("SimpleDateFormat") String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        String whereClause = COLUMN_TIMESTAMP + " < ?";
-        String[] whereArgs = {currentDate + " 00:00:00"};
-        db.delete(TABLE_MESSAGES, whereClause, whereArgs);
-        db.close();
+        SQLiteDatabase db = null;
+        try {
+            db = this.getWritableDatabase();
+            @SuppressLint("SimpleDateFormat")
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            String whereClause = COLUMN_TIMESTAMP + " < ?";
+            String[] whereArgs = {currentDate + " 00:00:00"};
+            db.delete(TABLE_MESSAGES, whereClause, whereArgs);
+        } catch (Exception e) {
+            // Log the exception
+            Log.e("DatabaseHelper", "Error deleting old messages", e);
+        } finally {
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
     }
+
 
     public List<Message> getLast5MessagesBySender(String sender) {
         List<Message> messages = new ArrayList<>();

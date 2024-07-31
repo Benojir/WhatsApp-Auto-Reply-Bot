@@ -25,6 +25,7 @@ import zo.ro.whatsappreplybot.helpers.WhatsAppMessageHandler;
 import zo.ro.whatsappreplybot.models.Message;
 
 public class CustomReplyGenerator {
+    
     private final String API_URL = "https://browser.foganime.com/whatsapp-autobot/generate-reply.php";
     private static final String TAG = "MADARA";
     private final String API_KEY;

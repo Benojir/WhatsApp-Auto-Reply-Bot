@@ -32,12 +32,14 @@ public class CustomReplyGenerator {
     private final String LLM_MODEL;
     private final WhatsAppMessageHandler messageHandler;
     private final String defaultReplyMessage;
+    private final String aiReplyLanguage;
 
     public CustomReplyGenerator(Context context, SharedPreferences sharedPreferences, WhatsAppMessageHandler whatsAppMessageHandler) {
         this.messageHandler = whatsAppMessageHandler;
         API_KEY = sharedPreferences.getString("api_key", "").trim();
         LLM_MODEL = sharedPreferences.getString("llm_model", "custom-gpt-4o");
         defaultReplyMessage = sharedPreferences.getString("default_reply_message", context.getString(R.string.default_bot_message));
+        aiReplyLanguage = sharedPreferences.getString("ai_reply_language", "English");
     }
 
     public void generateReply(String sender, String message, CustomReplyGenerator.OnReplyGeneratedListener listener) {
@@ -45,7 +47,7 @@ public class CustomReplyGenerator {
         new Thread(() -> messageHandler.getLast5Messages(sender, messages -> {
 
             StringBuilder chatHistory = getChatHistory(messages);
-            StringBuilder prompt = buildPrompt(message, chatHistory);
+            StringBuilder prompt = buildPrompt(sender, message, chatHistory);
 
 
             OkHttpClient client = new OkHttpClient.Builder()
@@ -112,21 +114,25 @@ public class CustomReplyGenerator {
 
 //    ----------------------------------------------------------------------------------------------
 
-    private static @NonNull StringBuilder buildPrompt(String message, StringBuilder chatHistory) {
+    private @NonNull StringBuilder buildPrompt(String sender, String message, StringBuilder chatHistory) {
 
         StringBuilder prompt = new StringBuilder();
 
         if (chatHistory.toString().isEmpty()) {
-            prompt.append("You are a WhatsApp auto-reply bot. Your task is to reply to the incoming message. Response only the chat and do not add any other text.");
-            prompt.append("Always respond in Bengali. Be polite, context-aware, and ensure your replies are relevant to the conversation.");
-            prompt.append("\n\n\nThis is the most recent message from the sender: ").append(message);
+            prompt.append("You are a WhatsApp auto-reply bot. Your task is to reply to the incoming message. Response only the chat and do not add any other text. ");
+            prompt.append("Always respond in ").append(aiReplyLanguage).append(". Be polite, context-aware, and ensure your replies are relevant to the conversation.");
+            prompt.append("\n\n\nMost recent message (from ");
+            prompt.append(sender).append("): ");
+            prompt.append(message);
             return prompt;
         }
 
         prompt.append("You are a WhatsApp auto-reply bot. Your task is to read the provided previous chat history and reply to the most recent incoming message. ");
-        prompt.append("Always respond in Bengali. Be polite, context-aware, and ensure your replies are relevant to the conversation.\n\n");
+        prompt.append("Always respond in ").append(aiReplyLanguage).append(". Be polite, context-aware, and ensure your replies are relevant to the conversation.\n\n");
         prompt.append("Previous chat history: \n").append(chatHistory);
-        prompt.append("\n\nThis is the most recent message from the sender: ").append(message);
+        prompt.append("\n\n\nMost recent message (from ");
+        prompt.append(sender).append("): ");
+        prompt.append(message);
         return prompt;
     }
 

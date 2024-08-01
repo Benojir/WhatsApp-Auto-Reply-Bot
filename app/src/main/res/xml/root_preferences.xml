@@ -65,6 +65,15 @@
             app:title="@string/llm_model_title"
             app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            app:dependency="is_ai_reply_enabled"
+            app:defaultValue="English"
+            app:entries="@array/languages"
+            app:entryValues="@array/languages"
+            app:key="ai_reply_language"
+            app:title="@string/ai_reply_language_title"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

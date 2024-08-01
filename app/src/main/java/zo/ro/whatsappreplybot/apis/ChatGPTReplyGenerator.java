@@ -34,12 +34,14 @@ public class ChatGPTReplyGenerator {
     private final WhatsAppMessageHandler messageHandler;
     private List<Message> messagesList;
     private final String defaultReplyMessage;
+    private final String aiReplyLanguage;
 
     public ChatGPTReplyGenerator(Context context, SharedPreferences sharedPreferences, WhatsAppMessageHandler whatsAppMessageHandler) {
         this.messageHandler = whatsAppMessageHandler;
         API_KEY = sharedPreferences.getString("api_key", "").trim();
         LLM_MODEL = sharedPreferences.getString("llm_model", "gpt-4o-mini");
         defaultReplyMessage = sharedPreferences.getString("default_reply_message", context.getString(R.string.default_bot_message));
+        aiReplyLanguage = sharedPreferences.getString("ai_reply_language", "English");
     }
 
     public void generateReply(String sender, String message, OnReplyGeneratedListener listener) {
@@ -65,7 +67,7 @@ public class ChatGPTReplyGenerator {
                     systemRole.put(
                             "content", "You are a WhatsApp auto-reply bot. " +
                                     "Your task is to read the provided previous chat history and reply to the most recent incoming message. " +
-                                    "Always respond in Bengali. Be polite, context-aware, and ensure your replies are relevant to the conversation."
+                                    "Always respond in " + aiReplyLanguage + ". Be polite, context-aware, and ensure your replies are relevant to the conversation."
                     );
 
                     userRole1.put("role", "user");
@@ -77,7 +79,7 @@ public class ChatGPTReplyGenerator {
                     }
 
                     userRole2.put("role", "user");
-                    userRole2.put("content", "This is the most recent message from the sender: " + message);
+                    userRole2.put("content", "Most recent message from the sender (" + sender + "): " + message);
 
 
                     httpRequestMessages.put(systemRole);

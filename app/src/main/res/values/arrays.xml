@@ -15,4 +15,38 @@
         <item>gpt-4o-mini</item>
         <item>custom-gpt-4o</item>
     </string-array>
+
+    <string-array name="languages">
+        <item>English</item>
+        <item>Hindi</item>
+        <item>Bengali</item>
+        <item>Chinese</item>
+        <item>Japanese</item>
+        <item>Spanish</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Portuguese</item>
+        <item>Russian</item>
+        <item>Italian</item>
+        <item>Korean</item>
+        <item>Arabic</item>
+        <item>Turkish</item>
+        <item>Dutch</item>
+        <item>Swedish</item>
+        <item>Greek</item>
+        <item>Thai</item>
+        <item>Vietnamese</item>
+        <item>Indonesian</item>
+        <item>Malay</item>
+        <item>Polish</item>
+        <item>Ukrainian</item>
+        <item>Romanian</item>
+        <item>Czech</item>
+        <item>Hungarian</item>
+        <item>Finnish</item>
+        <item>Danish</item>
+        <item>Norwegian</item>
+        <item>Hebrew</item>
+    </string-array>
+
 </resources>

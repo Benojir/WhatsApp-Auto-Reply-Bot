@@ -109,13 +109,14 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
                         String llmModel = sharedPreferences.getString("llm_model", "gpt-4o-mini").toLowerCase();
 
-                        if (llmModel.contains("gpt")) {
+                        if (llmModel.startsWith("gpt")) {
 
                             ChatGPTReplyGenerator chatGPTReplyGenerator = new ChatGPTReplyGenerator(this, sharedPreferences, messageHandler);
 
                             chatGPTReplyGenerator.generateReply(sender, message, reply -> {
                                 botReplyMessage = replyPrefix + " " + reply;
-                                messageHandler.handleIncomingMessage(sender, message, botReplyMessage);
+                                String botReplyWithoutPrefix = botReplyMessage.replace(replyPrefix, "").trim();
+                                messageHandler.handleIncomingMessage(sender, message, botReplyWithoutPrefix);
                                 send(action, botReplyMessage);
                                 new Handler(Looper.getMainLooper()).postDelayed(() -> respondedMessages.remove(messageId), 750);
                             });
@@ -126,7 +127,8 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
                             customReplyGenerator.generateReply(sender, message, reply -> {
                                 botReplyMessage = replyPrefix + " " + reply;
-                                messageHandler.handleIncomingMessage(sender, message, botReplyMessage);
+                                String botReplyWithoutPrefix = botReplyMessage.replace(replyPrefix, "").trim();
+                                messageHandler.handleIncomingMessage(sender, message, botReplyWithoutPrefix);
                                 send(action, botReplyMessage);
                                 new Handler(Looper.getMainLooper()).postDelayed(() -> respondedMessages.remove(messageId), 750);
                             });
@@ -134,7 +136,8 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
                     } else {
                         botReplyMessage = (replyPrefix + " " + sharedPreferences.getString("default_reply_message", getString(R.string.default_bot_message))).trim();
-                        messageHandler.handleIncomingMessage(sender, message, botReplyMessage);
+                        String botReplyWithoutPrefix = botReplyMessage.replace(replyPrefix, "").trim();
+                        messageHandler.handleIncomingMessage(sender, message, botReplyWithoutPrefix);
                         send(action, botReplyMessage);
                         new Handler().postDelayed(() -> respondedMessages.remove(messageId), 750);
                     }

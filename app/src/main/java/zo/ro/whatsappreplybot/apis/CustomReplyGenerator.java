@@ -26,7 +26,7 @@ import zo.ro.whatsappreplybot.models.Message;
 
 public class CustomReplyGenerator {
 
-    private final String API_URL = "http://localhost:5000/";
+    private final String API_URL = "http://localhost:8000/generate/";
     private static final String TAG = "MADARA";
     private final String API_KEY;
     private final String LLM_MODEL;
@@ -161,7 +161,11 @@ public class CustomReplyGenerator {
     private String parseResponse(String responseData) {
         try {
             JSONObject jsonObject = new JSONObject(responseData);
-            return jsonObject.getString("response");
+            String reply = jsonObject.getString("response");
+
+            if (!reply.isEmpty()){
+                return reply;
+            }
         } catch (Exception e) {
             Log.d(TAG, "parseResponse: " + e.getMessage());
         }

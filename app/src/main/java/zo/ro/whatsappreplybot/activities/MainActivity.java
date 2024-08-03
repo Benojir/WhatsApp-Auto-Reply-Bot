@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding.permissionAndSettingsBtn.setOnClickListener(v -> {
             if (isSettingsButton) {
-                startActivity(new Intent(this, SettingsActivity.class));
+                startActivity(new Intent(this, BotSettingsActivity.class));
             } else {
                 startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
             }
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setSettingsButton() {
         isSettingsButton = true;
-        binding.permissionAndSettingsBtn.setText(R.string.settings);
+        binding.permissionAndSettingsBtn.setText(R.string.bot_settings);
         binding.permissionAndSettingsBtn.setAllCaps(true);
         binding.permissionAndSettingsBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.settings_24, 0, 0, 0);
         int tintColor = ContextCompat.getColor(this, R.color.white);

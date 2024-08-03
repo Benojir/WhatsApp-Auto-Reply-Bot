@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">WhatsApp AI Bot</string>
     <string name="default_bot_message">I am not available right now. I will be back soon.</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_bot_settings">BotSettingsActivity</string>
     <string name="general_header">General</string>
     <string name="bot_enable_summary_off">Auto reply is turned off.</string>
     <string name="enable_bot_title">Auto Reply</string>
@@ -24,6 +24,6 @@
     <string name="setup_page_info">Enhance your WhatsApp experience with our AI-powered auto-reply bot. Customize the bot\'s language and get timely, context-aware replies to your messages based on chat history.</string>
     <string name="permission_request_text">This app requires notification service permission to function properly.</string>
     <string name="allow_permission">Allow Permissions</string>
-    <string name="settings">Settings</string>
+    <string name="bot_settings">Bot Settings</string>
     <string name="manage_bot_settings">If you want to customize the bot, then open settings page and adjust the settings according to your desires.</string>
 </resources>

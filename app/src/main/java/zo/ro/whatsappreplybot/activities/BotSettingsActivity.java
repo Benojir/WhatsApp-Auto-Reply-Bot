@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -22,12 +23,12 @@ import zo.ro.whatsappreplybot.helpers.NotificationHelper;
 import zo.ro.whatsappreplybot.others.InputFilterMinMax;
 import zo.ro.whatsappreplybot.services.MyNotificationListenerService;
 
-public class SettingsActivity extends AppCompatActivity {
+public class BotSettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
+        setContentView(R.layout.activity_bot_settings);
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -60,7 +61,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         View included_toolbar = findViewById(R.id.toolbar_include);
         MaterialToolbar toolbar = included_toolbar.findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        toolbar.setTitleCentered(false);
+        toolbar.setTitle("Bot Settings");
+        toolbar.setNavigationIcon(AppCompatResources.getDrawable(this, R.drawable.arrow_back_24));
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {

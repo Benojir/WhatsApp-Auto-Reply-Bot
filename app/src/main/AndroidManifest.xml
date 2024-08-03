@@ -20,9 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".activities.BotSettingsActivity"
             android:exported="true"
-            android:label="@string/title_activity_settings">
+            android:label="@string/title_activity_bot_settings">
         </activity>
         <activity
             android:name=".activities.MainActivity"

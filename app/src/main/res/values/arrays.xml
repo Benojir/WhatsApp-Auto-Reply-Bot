@@ -5,6 +5,8 @@
         <item>GPT 4</item>
         <item>GPT 4o</item>
         <item>GPT 4o Mini</item>
+        <item>Gemini 1.5 Flash</item>
+        <item>Gemini 1.5 Pro</item>
         <item>Custom API</item>
     </string-array>
 
@@ -13,6 +15,8 @@
         <item>gpt-4</item>
         <item>gpt-4o</item>
         <item>gpt-4o-mini</item>
+        <item>gemini-1.5-flash</item>
+        <item>gemini-1.5-pro</item>
         <item>custom-gpt-4o</item>
     </string-array>
 

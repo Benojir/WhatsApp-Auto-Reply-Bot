@@ -45,4 +45,8 @@ dependencies {
     androidTestImplementation libs.espresso.core
 
     implementation libs.okhttp
+
+    implementation(libs.generativeai)
+    implementation(libs.guava)
+    implementation(libs.reactive.streams)
 }

@@ -38,7 +38,7 @@ public class ChatGPTReplyGenerator {
 
     public ChatGPTReplyGenerator(Context context, SharedPreferences sharedPreferences, WhatsAppMessageHandler whatsAppMessageHandler) {
         this.messageHandler = whatsAppMessageHandler;
-        API_KEY = sharedPreferences.getString("api_key", "").trim();
+        API_KEY = sharedPreferences.getString("api_key", "not-set").trim();
         LLM_MODEL = sharedPreferences.getString("llm_model", "gpt-4o-mini");
         defaultReplyMessage = sharedPreferences.getString("default_reply_message", context.getString(R.string.default_bot_message));
         aiReplyLanguage = sharedPreferences.getString("ai_reply_language", "English");
@@ -55,7 +55,7 @@ public class ChatGPTReplyGenerator {
             JSONObject userRole1 = new JSONObject();
             JSONObject userRole2 = new JSONObject();
 
-            messageHandler.getLast5Messages(sender, messages -> {
+            messageHandler.getMessagesHistory(sender, messages -> {
 
                 messagesList = messages;
 
@@ -171,9 +171,9 @@ public class ChatGPTReplyGenerator {
 
                 chatHistory.append(senderName).append(": ").append(senderMessage);
                 chatHistory.append("\n");
-                chatHistory.append("Timestamp: ").append(senderMessageTimestamp);
+                chatHistory.append("Time: ").append(senderMessageTimestamp);
                 chatHistory.append("\n");
-                chatHistory.append("My reply to this message: ").append(myReplyToSenderMessage);
+                chatHistory.append("My reply: ").append(myReplyToSenderMessage);
                 chatHistory.append("\n\n");
             }
         }

@@ -87,7 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<Message> getLast5MessagesBySender(String sender) {
+    public List<Message> getChatHistoryBySender(String sender) {
         List<Message> messages = new ArrayList<>();
         SQLiteDatabase db = null;
         Cursor cursor = null;
@@ -97,7 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db = this.getReadableDatabase();
 
             String query = "SELECT * FROM " + TABLE_MESSAGES + " WHERE " + COLUMN_SENDER + " = ? " +
-                    "ORDER BY " + COLUMN_TIMESTAMP + " DESC LIMIT 5";
+                    "ORDER BY " + COLUMN_TIMESTAMP + " DESC LIMIT 7";
             cursor = db.rawQuery(query, new String[]{sender});
 
             if (cursor.moveToFirst()) {

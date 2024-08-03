@@ -19,6 +19,7 @@
         <SwitchPreferenceCompat
             app:dependency="is_bot_enabled"
             app:key="is_group_reply_enabled"
+            app:defaultValue="false"
             app:summaryOff="@string/group_reply_enable_summary_off"
             app:summaryOn="@string/group_reply_enable_summary_on"
             app:title="@string/enable_group_reply_title" />
@@ -45,7 +46,7 @@
         <SwitchPreferenceCompat
             app:dependency="is_bot_enabled"
             app:key="is_ai_reply_enabled"
-            defaultValue="false"
+            app:defaultValue="false"
             app:summaryOff="@string/ai_reply_enable_summary_off"
             app:summaryOn="@string/ai_reply_enable_summary_on"
             app:title="@string/enable_ai_reply_title" />
@@ -72,6 +73,13 @@
             app:entryValues="@array/languages"
             app:key="ai_reply_language"
             app:title="@string/ai_reply_language_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:dependency="is_ai_reply_enabled"
+            app:key="bot_name"
+            app:title="@string/bot_name_title"
+            app:defaultValue="Yuji"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

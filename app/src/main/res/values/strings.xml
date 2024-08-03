@@ -20,4 +20,5 @@
     <string name="default_reply_prefix">*Bot reply:*</string>
     <string name="max_reply_title">Max reply per person/day</string>
     <string name="ai_reply_language_title">AI Reply Language</string>
+    <string name="bot_name_title">Bot\'s Name</string>
 </resources>

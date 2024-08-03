@@ -44,7 +44,7 @@ public class CustomReplyGenerator {
 
     public void generateReply(String sender, String message, CustomReplyGenerator.OnReplyGeneratedListener listener) {
 
-        new Thread(() -> messageHandler.getLast5Messages(sender, messages -> {
+        new Thread(() -> messageHandler.getMessagesHistory(sender, messages -> {
 
             StringBuilder chatHistory = getChatHistory(messages);
             StringBuilder prompt = buildPrompt(sender, message, chatHistory);
@@ -153,7 +153,7 @@ public class CustomReplyGenerator {
 
                 chatHistory.append(senderName).append(": ").append(senderMessage);
                 chatHistory.append("\n");
-                chatHistory.append("Message sent time: ").append(senderMessageTimestamp);
+                chatHistory.append("Time: ").append(senderMessageTimestamp);
                 chatHistory.append("\n");
                 chatHistory.append("My reply: ").append(myReplyToSenderMessage);
                 chatHistory.append("\n\n");

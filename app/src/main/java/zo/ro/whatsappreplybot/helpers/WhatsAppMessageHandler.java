@@ -29,9 +29,9 @@ public class WhatsAppMessageHandler {
 
 //    ----------------------------------------------------------------------------------------------
 
-    public void getLast5Messages(String sender, OnMessagesRetrievedListener listener) {
+    public void getMessagesHistory(String sender, OnMessagesRetrievedListener listener) {
         new Thread(() -> {
-            List<Message> messages = dbHelper.getLast5MessagesBySender(sender);
+            List<Message> messages = dbHelper.getChatHistoryBySender(sender);
             listener.onMessagesRetrieved(messages);
         }).start();
     }

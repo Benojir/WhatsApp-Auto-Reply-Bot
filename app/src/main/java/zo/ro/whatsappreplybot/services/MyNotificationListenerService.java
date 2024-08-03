@@ -24,6 +24,7 @@ import java.util.Set;
 import zo.ro.whatsappreplybot.R;
 import zo.ro.whatsappreplybot.apis.ChatGPTReplyGenerator;
 import zo.ro.whatsappreplybot.apis.CustomReplyGenerator;
+import zo.ro.whatsappreplybot.apis.GeminiReplyGenerator;
 import zo.ro.whatsappreplybot.helpers.WhatsAppMessageHandler;
 
 public class MyNotificationListenerService extends NotificationListenerService {
@@ -126,6 +127,18 @@ public class MyNotificationListenerService extends NotificationListenerService {
                             CustomReplyGenerator customReplyGenerator = new CustomReplyGenerator(this, sharedPreferences, messageHandler);
 
                             customReplyGenerator.generateReply(sender, message, reply -> {
+                                botReplyMessage = replyPrefix + " " + reply;
+                                String botReplyWithoutPrefix = botReplyMessage.replace(replyPrefix, "").trim();
+                                messageHandler.handleIncomingMessage(sender, message, botReplyWithoutPrefix);
+                                send(action, botReplyMessage);
+                                new Handler(Looper.getMainLooper()).postDelayed(() -> respondedMessages.remove(messageId), 750);
+                            });
+
+                        } else if (llmModel.startsWith("gemini")) {
+
+                            GeminiReplyGenerator geminiReplyGenerator = new GeminiReplyGenerator(this, sharedPreferences, messageHandler);
+
+                            geminiReplyGenerator.generateReply(sender, message, reply -> {
                                 botReplyMessage = replyPrefix + " " + reply;
                                 String botReplyWithoutPrefix = botReplyMessage.replace(replyPrefix, "").trim();
                                 messageHandler.handleIncomingMessage(sender, message, botReplyWithoutPrefix);

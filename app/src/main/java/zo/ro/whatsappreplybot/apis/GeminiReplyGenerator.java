@@ -63,6 +63,7 @@ public class GeminiReplyGenerator {
                 public void onSuccess(GenerateContentResponse result) {
                     String resultText = result.getText();
                     listener.onReplyGenerated(resultText);
+                    Log.d(TAG, "onSuccess: " + resultText);
                 }
 
                 @Override

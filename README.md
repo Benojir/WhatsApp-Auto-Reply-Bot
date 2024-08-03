@@ -1,4 +1,7 @@
 # AI-Powered WhatsApp Auto-Reply Bot
+
+Welcome to the WhatsApp Auto-Reply Bot repository! This AI-powered bot enhances your WhatsApp experience by providing automated responses to incoming messages and analyzing chat history. It supports multiple AI models, including Gemini, Claude AI, and GPT, allowing for versatile and intelligent interactions.
+
 ## Supported models
 - GPT-3.5-Turbo
 - GPT-4

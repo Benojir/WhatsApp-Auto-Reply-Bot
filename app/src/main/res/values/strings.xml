@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WhatsApp Reply Bot</string>
+    <string name="app_name">WhatsApp AI Bot</string>
     <string name="default_bot_message">I am not available right now. I will be back soon.</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="general_header">General</string>

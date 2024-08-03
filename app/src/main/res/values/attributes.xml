@@ -1,0 +1,7 @@
+<resources>
+    <declare-styleable name="CustomTheme">
+        <attr name="customBackgroundColor" format="color" />
+        <attr name="customTextColor" format="color" />
+        <attr name="customFontSize" format="dimension" />
+    </declare-styleable>
+</resources>

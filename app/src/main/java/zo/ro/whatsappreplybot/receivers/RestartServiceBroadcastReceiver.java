@@ -9,7 +9,6 @@ import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-import zo.ro.whatsappreplybot.helpers.CustomMethods;
 import zo.ro.whatsappreplybot.helpers.NotificationHelper;
 import zo.ro.whatsappreplybot.services.MyNotificationListenerService;
 
@@ -21,12 +20,14 @@ public class RestartServiceBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (CustomMethods.isNotificationServiceEnabled(context)) {
+        if (NotificationHelper.isNotificationServicePermissionGranted(context)) {
 
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-            if (sharedPreferences.getBoolean("is_bot_enabled", true)) {
-                if (!NotificationHelper.isNotificationServiceRunning(context)) {
+            boolean isBotEnabled = sharedPreferences.getBoolean("is_bot_enabled", true);
+
+            if (isBotEnabled) {
+                if (!NotificationHelper.isNotificationListenerServiceRunning(context)) {
                     Intent serviceIntent = new Intent(context, MyNotificationListenerService.class);
                     context.startService(serviceIntent);
                     Log.d(TAG, "Notification service started after boot");

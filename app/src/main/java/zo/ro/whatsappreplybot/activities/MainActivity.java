@@ -12,7 +12,7 @@ import androidx.core.widget.TextViewCompat;
 
 import zo.ro.whatsappreplybot.R;
 import zo.ro.whatsappreplybot.databinding.ActivityMainBinding;
-import zo.ro.whatsappreplybot.helpers.CustomMethods;
+import zo.ro.whatsappreplybot.helpers.NotificationHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        if (CustomMethods.isNotificationServiceEnabled(this)) {
+        if (NotificationHelper.isNotificationServicePermissionGranted(this)) {
             setSettingsButton();
         }
 
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (CustomMethods.isNotificationServiceEnabled(this)) {
+        if (NotificationHelper.isNotificationServicePermissionGranted(this)) {
             setSettingsButton();
         }
     }

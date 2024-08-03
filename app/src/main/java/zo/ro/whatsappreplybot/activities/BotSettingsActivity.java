@@ -18,7 +18,6 @@ import androidx.preference.PreferenceManager;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import zo.ro.whatsappreplybot.R;
-import zo.ro.whatsappreplybot.helpers.CustomMethods;
 import zo.ro.whatsappreplybot.helpers.NotificationHelper;
 import zo.ro.whatsappreplybot.others.InputFilterMinMax;
 import zo.ro.whatsappreplybot.services.MyNotificationListenerService;
@@ -38,17 +37,17 @@ public class BotSettingsActivity extends AppCompatActivity {
 
 //        ------------------------------------------------------------------------------------------
 
-        if (CustomMethods.isNotificationServiceEnabled(this)){
+        if (NotificationHelper.isNotificationServicePermissionGranted(this)){
 
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             boolean isBotEnabled = sharedPreferences.getBoolean("is_bot_enabled", true);
 
             if (isBotEnabled) {
-                if (!NotificationHelper.isNotificationServiceRunning(this)) {
+                if (!NotificationHelper.isNotificationListenerServiceRunning(this)) {
                     startService(new Intent(this, MyNotificationListenerService.class));
                 }
             } else {
-                if (NotificationHelper.isNotificationServiceRunning(this)) {
+                if (NotificationHelper.isNotificationListenerServiceRunning(this)) {
                     stopService(new Intent(this, MyNotificationListenerService.class));
                 }
             }

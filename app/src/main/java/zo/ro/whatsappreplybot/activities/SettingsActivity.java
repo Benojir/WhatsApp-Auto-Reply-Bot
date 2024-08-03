@@ -7,11 +7,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+
+import com.google.android.material.appbar.MaterialToolbar;
 
 import zo.ro.whatsappreplybot.R;
 import zo.ro.whatsappreplybot.helpers.CustomMethods;
@@ -49,16 +52,15 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         } else {
-            startActivity(new Intent(this, SetupActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             new Handler(Looper.getMainLooper()).postDelayed(this::finish, 1000);
         }
 
 //        ------------------------------------------------------------------------------------------
 
-//        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//        }
+        View included_toolbar = findViewById(R.id.toolbar_include);
+        MaterialToolbar toolbar = included_toolbar.findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {

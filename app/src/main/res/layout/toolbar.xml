@@ -12,6 +12,7 @@
         android:background="?attr/colorPrimary"
         app:title="@string/app_name"
         app:titleCentered="true"
+        app:titleTextColor="@color/white"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Title"
         app:popupTheme="@style/Widget.AppCompat.PopupMenu" />
 

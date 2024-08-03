@@ -1,8 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.WhatsAppReplyBot" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/teal_lighter</item>
+        <item name="colorAccent">@color/teal_lighter</item>
+        <item name="android:statusBarColor">@color/teal_lighter</item>
+
+        <!-- Customize text here. -->
+        <item name="textColor">@color/black</item>
     </style>
 
     <style name="Theme.WhatsAppReplyBot" parent="Base.Theme.WhatsAppReplyBot" />

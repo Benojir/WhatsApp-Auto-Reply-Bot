@@ -15,4 +15,4 @@
 - <b>Custom Bot Name: </b> You can give a name to your AI bot.
 
 ## Community
-> Join our Telegram Group <a href="https://telegram.me/CreativePapaGroup">@CreativePapaGroup</a>
+- <b>Join our Telegram Group: </b> <a href="https://telegram.me/CreativePapaGroup">@CreativePapaGroup</a>

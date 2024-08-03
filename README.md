@@ -1,4 +1,4 @@
-# AI Powered WhatsApp auto-reply bot.
+# AI-Powered WhatsApp Auto-Reply Bot
 ## Supported models
 - GPT-3.5-Turbo
 - GPT-4

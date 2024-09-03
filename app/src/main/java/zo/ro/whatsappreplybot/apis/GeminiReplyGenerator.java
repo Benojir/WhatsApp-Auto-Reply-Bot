@@ -81,14 +81,27 @@ public class GeminiReplyGenerator {
 
         StringBuilder prompt = new StringBuilder();
 
+        // Define common minimal responses
+        String[] minimalResponses = {"hmm", "ok", "fine", "k", "hm", "kk"};
+        boolean isMinimalResponse = Arrays.asList(minimalResponses).contains(message.trim().toLowerCase());
+
         if (!chatHistory.toString().isEmpty()) {
             prompt.append("You are a WhatsApp auto-reply bot named ").append(botName);
             prompt.append(" who pretends to be human and doesn't disclose that you are a bot.");
-            prompt.append(" Give appropriate replies according to the latest message and the previous chat history.");
+            prompt.append(" You are replying on behalf of a 20-year-old Indian boy who is cool, has a great sense of humor, and loves dank Indian memes.");
+
+            if (isMinimalResponse) {
+                prompt.append(" The received message is minimal ('").append(message).append("'), so generate a reply that matches the tone of the sender.");
+            } else {
+                prompt.append(" Respond in a way that matches the sender's tone—be it casual, sarcastic, or serious.");
+                prompt.append(" If the situation feels appropriate, feel free to add a hint of sarcasm.");
+            }
+
+            prompt.append(" Make sure your reply sounds human and natural.");
+            prompt.append(" Avoid generic responses like 'ok', 'hmm', or 'fine'.");
             prompt.append(" Generate only reply texts. Don't add any other texts.");
             prompt.append(" Always reply in ").append(aiReplyLanguage).append(".");
-            prompt.append(" Incorporate common phrases, slang, and emojis that a typical human would use");
-            prompt.append(" Use light-hearted jokes or playful sarcasm to make the conversation more engaging.");
+            prompt.append(" Incorporate common phrases, slang, and emojis that a typical human would use.");
             prompt.append(" Be polite, context-aware, and ensure your replies are relevant to the conversation.");
             prompt.append("\n\n\nMost recent message (from ");
             prompt.append(sender).append("): ");
@@ -98,9 +111,21 @@ public class GeminiReplyGenerator {
         }
 
         prompt.append("You are a WhatsApp auto-reply bot named ").append(botName);
-        prompt.append("Your task is replying to the incoming message. ");
-        prompt.append("Always reply in ").append(aiReplyLanguage);
-        prompt.append(". Be polite, context-aware, and ensure your replies are relevant to the conversation.\n\n");
+        prompt.append(" who pretends to be human and doesn't disclose that you are a bot.");
+        prompt.append(" You are replying on behalf of a 20-year-old Indian boy who is cool, has a great sense of humor, and loves dank Indian memes.");
+        
+        if (isMinimalResponse) {
+            prompt.append(" The received message is minimal ('").append(message).append("'), so generate a reply that matches the tone of the sender.");
+        } else {
+            prompt.append(" Respond in a way that matches the sender's tone—be it casual, sarcastic, or serious.");
+            prompt.append(" If the situation feels appropriate, feel free to add a hint of sarcasm.");
+        }
+
+        prompt.append(" Make sure your reply sounds human and natural.");
+        prompt.append(" Avoid generic responses like 'ok', 'hmm', or 'fine'.");
+        prompt.append(" Always reply in ").append(aiReplyLanguage).append(".");
+        prompt.append(" Be polite, context-aware, and ensure your replies are relevant to the conversation.");
+        prompt.append(" Incorporate humor and references to popular memes where appropriate.");
         prompt.append("\n\n\nIncoming message (from ");
         prompt.append(sender).append("): ");
         prompt.append(message);

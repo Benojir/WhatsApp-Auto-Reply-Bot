@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Calendar;
 
 import zo.ro.whatsappreplybot.models.Message;
 
@@ -19,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "MADARA";
     private static final String DATABASE_NAME = "whatsappMessages.db";
-    private static final int DATABASE_VERSION = 1; // Increment version for schema change
+    private static final int DATABASE_VERSION = 1;
     public static final String TABLE_MESSAGES = "messages";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_SENDER = "sender";
@@ -47,37 +48,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        if (oldVersion < 2) {
-//            db.execSQL("ALTER TABLE " + TABLE_MESSAGES + " ADD COLUMN " + COLUMN_REPLY + " TEXT;");
-//        }
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
         onCreate(db);
     }
 
-//    ----------------------------------------------------------------------------------------------
-
-    public void insertMessage(String sender, String message, String timestamp, String reply) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_SENDER, sender);
-        values.put(COLUMN_MESSAGE, message);
-        values.put(COLUMN_TIMESTAMP, timestamp);
-        values.put(COLUMN_REPLY, reply);
-        db.insert(TABLE_MESSAGES, null, values);
-        db.close();
-    }
-
+    // Step 1: Modify deleteOldMessages to delete messages older than 7 days
     public void deleteOldMessages() {
         SQLiteDatabase db = null;
         try {
             db = this.getWritableDatabase();
             @SuppressLint("SimpleDateFormat")
-            String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            String sevenDaysAgo = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(getDateBeforeDays(7));
             String whereClause = COLUMN_TIMESTAMP + " < ?";
-            String[] whereArgs = {currentDate + " 00:00:00"};
+            String[] whereArgs = {sevenDaysAgo};
             db.delete(TABLE_MESSAGES, whereClause, whereArgs);
         } catch (Exception e) {
-            // Log the exception
             Log.e("DatabaseHelper", "Error deleting old messages", e);
         } finally {
             if (db != null && db.isOpen()) {
@@ -86,19 +71,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    // Utility method to get the date X days ago
+    private Date getDateBeforeDays(int days) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -days);
+        return calendar.getTime();
+    }
 
+    // Step 2: Modify getChatHistoryBySender to retrieve messages from the last 7 days
     public List<Message> getChatHistoryBySender(String sender) {
         List<Message> messages = new ArrayList<>();
         SQLiteDatabase db = null;
         Cursor cursor = null;
 
         try {
-            // Ensure the database is opened
             db = this.getReadableDatabase();
-
+            String sevenDaysAgo = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(getDateBeforeDays(7));
             String query = "SELECT * FROM " + TABLE_MESSAGES + " WHERE " + COLUMN_SENDER + " = ? " +
-                    "ORDER BY " + COLUMN_TIMESTAMP + " DESC LIMIT 7";
-            cursor = db.rawQuery(query, new String[]{sender});
+                    "AND " + COLUMN_TIMESTAMP + " >= ? ORDER BY " + COLUMN_TIMESTAMP + " DESC";
+            cursor = db.rawQuery(query, new String[]{sender, sevenDaysAgo});
 
             if (cursor.moveToFirst()) {
                 do {
@@ -112,45 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
-            Log.e(TAG, "getLast5MessagesBySender: ", e);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (db != null && db.isOpen()) {
-                db.close();
-            }
-        }
-
-        return messages;
-    }
-
-    public List<Message> getAllMessagesBySender(String sender) {
-        List<Message> messages = new ArrayList<>();
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-
-        try {
-            // Ensure the database is opened
-            db = this.getReadableDatabase();
-
-            String query = "SELECT * FROM " + TABLE_MESSAGES + " WHERE " + COLUMN_SENDER + " = ? " +
-                    "ORDER BY " + COLUMN_TIMESTAMP + " DESC";
-            cursor = db.rawQuery(query, new String[]{sender});
-
-            if (cursor.moveToFirst()) {
-                do {
-                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
-                    String message = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MESSAGE));
-                    String timestamp = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TIMESTAMP));
-                    String reply = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REPLY));
-
-                    Message msg = new Message(id, sender, message, timestamp, reply);
-                    messages.add(msg);
-                } while (cursor.moveToNext());
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "getLast5MessagesBySender: ", e);
+            Log.e(TAG, "getChatHistoryBySender: ", e);
         } finally {
             if (cursor != null) {
                 cursor.close();
